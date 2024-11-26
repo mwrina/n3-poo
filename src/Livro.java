@@ -5,14 +5,16 @@ public class Livro {
     private Genero genero;
     private Autor autor;
 
-    public Livro(int id, String nome_livro, double preco, Genero genero, Autor autor) {
+    // Construtor
+    public Livro(int id, String nome_livro, Genero genero, Autor autor) {
         this.id = id;
         this.nome_livro = nome_livro;
-        this.preco = preco;
         this.genero = genero;
         this.autor = autor;
+        this.preco = genero.getPreco(); // Preço determinado pelo gênero
     }
 
+    // Getters
     public int getId() {
         return id;
     }
@@ -33,6 +35,7 @@ public class Livro {
         return autor;
     }
 
+    // Setters
     public void setId(int id) {
         this.id = id;
     }
@@ -47,6 +50,7 @@ public class Livro {
 
     public void setGenero(Genero genero) {
         this.genero = genero;
+        this.preco = genero.getPreco(); // Atualiza o preço quando o gênero muda
     }
 
     public void setAutor(Autor autor) {
