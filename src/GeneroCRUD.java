@@ -53,31 +53,28 @@ public class GeneroCRUD {
         }
     }
 
-    public void readGeneroEspecifico (Genero g) {
-
-        String sql = "select genero from genero where id = ?";
+    public String readGeneroEspecifico(int generoId) {
+        String sql = "SELECT genero FROM genero WHERE id = ?";
+        String nomeGenero = null;
 
         try {
+            PreparedStatement pst = connect.prepareStatement(sql);
+            pst.setInt(1, generoId);
 
-            PreparedStatement pst;
-            pst = connect.prepareStatement(sql);
-
-            pst.setInt(1, g.getId());
-
-            //trata os casos em que há mais de 1 resultado na pesquisa
             ResultSet rst = pst.executeQuery();
 
-            while (rst.next()) {
-                int id = rst.getInt("id");
-                String nome = rst.getString(2); //Indica a segunda coluna
-
-                System.out.printf("Id: %d | Gênero: %s \n", id, nome);
+            if (rst.next()) {
+                nomeGenero = rst.getString("genero");
+            } else {
+                System.out.println("Nenhum gênero encontrado com o ID informado.");
             }
 
         } catch (SQLException ex) {
-            System.out.println("Falha ao buscar resultados");
+            System.out.println("Falha ao buscar o gênero: " + ex.getMessage());
+            ex.printStackTrace();
         }
 
+        return nomeGenero;
     }
 
     public void updateGenero (Genero g) {

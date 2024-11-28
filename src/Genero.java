@@ -27,11 +27,11 @@ public class Genero {
     // RETORNA O PREÇO COM BASE NO GÊNERO
     public double getPreco() {
         switch (this.genero) {
-            case "Terror":
+            case "Terror", "terror":
                 return 50.00;
-            case "Romance":
+            case "Romance", "romance":
                 return 30.00;
-            case "Ficção Científica":
+            case "Ficção Científica", "ficção científica", "ficcao cientifica", "ficçao cientifica":
                 return 40.00;
             default:
                 return 45.00; // Preço para outros gêneros
