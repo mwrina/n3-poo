@@ -26,15 +26,21 @@ public class Genero {
 
     // RETORNA O PREÇO COM BASE NO GÊNERO
     public double getPreco() {
-        switch (this.genero) {
-            case "Terror", "terror":
+        // Acessa o nome do gênero através do método getNome()
+        String nomeGenero = this.genero.toLowerCase(); // Usando toLowerCase() para facilitar a comparação
+
+        switch (nomeGenero) {
+            case "terror":
                 return 50.00;
-            case "Romance", "romance":
+            case "romance":
                 return 30.00;
-            case "Ficção Científica", "ficção científica", "ficcao cientifica", "ficçao cientifica":
+            case "ficção científica":
+            case "ficcao cientifica":
+            case "ficçao cientifica":
                 return 40.00;
             default:
                 return 45.00; // Preço para outros gêneros
         }
     }
+
 }

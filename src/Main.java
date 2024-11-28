@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -81,6 +83,8 @@ public class Main {
                             Autor autorLivro = new Autor(autorLivroId, ""); // Criar autor pelo ID (nome opcional aqui)
 
                             // Selecionar gênero
+                            generoCRUD.readGenero();
+
                             System.out.print("Digite o ID do gênero: ");
                             int generoLivroId = scanner.nextInt();
                             scanner.nextLine();
@@ -107,6 +111,7 @@ public class Main {
                             System.out.println("Opção inválida, tente novamente.");
                             break;
                     }
+                    break;
 
                 case 2:
 
@@ -176,20 +181,15 @@ public class Main {
                             int novoGeneroId = scanner.nextInt();
                             scanner.nextLine();
 
-                            // Busca o nome do gênero pelo ID
                             String nomeGenero = generoCRUD.readGeneroEspecifico(novoGeneroId);
 
                             if (nomeGenero != null) {
                                 Genero novoGeneroLivro = new Genero(novoGeneroId, nomeGenero); // Cria o gênero com o nome buscado
 
-                                // Cria o livro atualizado com as novas informações
                                 Livro livroEditado = new Livro(livroId, novoNomeLivro, novoGeneroLivro, novoAutorLivro);
 
-                                // Atualiza o preço automaticamente baseado no gênero
-                                System.out.printf("Preço atualizado automaticamente com base no gênero (%s): R$%.2f\n",
-                                        nomeGenero, livroEditado.getPreco());
+                                System.out.printf("Preço atualizado automaticamente com base no gênero (%s): R$%.2f\n", nomeGenero, livroEditado.getPreco());
 
-                                // Atualiza o livro no banco de dados
                                 livroCRUD.updateLivro(livroEditado);
 
                             } else {
@@ -240,6 +240,116 @@ public class Main {
                             System.out.println("Opção inválida, tente novamente.");
                             break;
 
+                    }
+                    break;
+
+                case 4: //EXCLUIR
+                    System.out.println("1 - Excluir Autor");
+                    System.out.println("2 - Excluir Gênero");
+                    System.out.println("3 - Excluir Livro");
+                    System.out.println("0 - Voltar");
+                    System.out.print("Escolha: ");
+
+                    opcao = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (opcao) {
+                        case 1: //EXCLUIR AUTOR
+
+                            autorCRUD.readAutor();
+
+                            System.out.print("Informe o ID do autor que deseja deletar: ");
+                            int excluirAutorId = scanner.nextInt();
+                            scanner.nextLine();
+
+                            if (livroCRUD.existeLivroPorAutor(excluirAutorId)) {
+                                System.out.println("Não é possível excluir o autor, pois existe pelo menos um livro cadastrado sob a autoria dele.");
+                            } else {
+                                autorCRUD.deleteAutor(excluirAutorId);
+                                System.out.println("Autor excluído com sucesso.");
+                            }
+                            break;
+
+                        case 2: //EXCLUIR GENERO
+
+                            generoCRUD.readGenero();
+
+                            System.out.print("Informe o ID do gênero que deseja deletar: ");
+                            int excluirGeneroId = scanner.nextInt();
+                            scanner.nextLine();
+
+                            if (livroCRUD.existeLivroPorGenero(excluirGeneroId)) {
+                                System.out.println("Não é possível excluir o gênero, pois existe pelo menos um livro nele");
+                            } else {
+                                generoCRUD.deleteGenero(excluirGeneroId);
+                                System.out.println("Gênero excluído com sucesso.");
+                            }
+                            break;
+
+                        case 3:
+                            livroCRUD.readLivro();
+
+                            System.out.print("Informe o ID do livro que deseja deletar: ");
+                            int excluirLivroId = scanner.nextInt();
+                            scanner.nextLine();
+
+                            livroCRUD.deleteLivro(excluirLivroId);
+                            System.out.println("Livro excluído com sucesso.");
+
+                            break;
+
+                        case 0:
+                            break;
+
+                        default:
+                            System.out.println("Opção inválida, tente novamente.");
+                            break;
+
+                    }
+                    break;
+
+                case 5:
+                    System.out.println("Comprando livros...");
+                    List<Livro> carrinho = new ArrayList<>();
+                    double totalCompra = 0.0;
+
+                    while (true) {
+                        livroCRUD.readLivro();
+                        System.out.print("Digite o ID do livro que deseja adicionar ao carrinho (ou 0 para finalizar): ");
+                        int livroId = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (livroId == 0) break;
+
+                        Livro livro = livroCRUD.getLivroPorId(livroId);
+                        if (livro != null) {
+                            carrinho.add(livro);
+                            totalCompra += livro.getGenero().getPreco(); // Preço baseado no gênero
+                            System.out.printf("Livro '%s' adicionado ao carrinho. Preço: R$%.2f%n", livro.getNome_livro(), livro.getGenero().getPreco());
+                        } else {
+                            System.out.println("Livro não encontrado. Tente novamente.");
+                        }
+                    }
+
+                    System.out.printf("Total da compra: R$%.2f%n", totalCompra);
+
+                    // Verificar necessidade de permissão
+                    try {
+                        if (totalCompra > 100.00) {
+                            System.out.print("O total da compra excede R$100,00. Você tem permissão para realizar esta compra? (sim/não): ");
+                            String resposta = scanner.nextLine();
+
+                            if (!resposta.equalsIgnoreCase("sim")) {
+                                System.out.println("Compra cancelada por falta de permissão.");
+                            } else {
+                                System.out.println("Compra autorizada e concluída!");
+                            }
+                        } else {
+                            System.out.println("Compra concluída com sucesso!");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Erro ao processar a compra: " + e.getMessage());
+                        e.printStackTrace();
                     }
                     break;
 

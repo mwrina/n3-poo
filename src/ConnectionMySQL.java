@@ -26,7 +26,7 @@ public class ConnectionMySQL {
             e.printStackTrace();
         }
 
-        String server = "localhost";
+        String server = "localhost:3306";
         String db = "n3poo";
 
         //jdbc = protocolo de conexão
@@ -50,6 +50,10 @@ public class ConnectionMySQL {
         }
 
         return connection;
+    }
+
+    public static String getStatus() {
+        return status;
     }
 
 }

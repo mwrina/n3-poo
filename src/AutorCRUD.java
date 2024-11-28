@@ -12,6 +12,11 @@ public class AutorCRUD {
     }
 
     public void createAutor (Autor a) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
         String sql = "INSERT INTO autor VALUES (?, ?)";
 
         try {
@@ -34,6 +39,11 @@ public class AutorCRUD {
     }
 
     public void readAutor() {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
         String sql = "SELECT * FROM autor";
 
         try (PreparedStatement pst = connect.prepareStatement(sql);
@@ -54,6 +64,10 @@ public class AutorCRUD {
     }
 
     public void readAutorEspecifico (Autor a) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
 
         String sql = "select nome_autor from autor where id = ?";
 
@@ -80,7 +94,33 @@ public class AutorCRUD {
 
     }
 
+    public Autor getAutorPorId(int autorId) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
+        String sql = "SELECT * FROM autor WHERE id = ?";
+        try {
+            PreparedStatement pst = connect.prepareStatement(sql);
+            pst.setInt(1, autorId);
+
+            ResultSet rst = pst.executeQuery();
+            if (rst.next()) {
+                String nome = rst.getString("nome_autor");
+                return new Autor(autorId, nome);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao buscar autor: " + ex.getMessage());
+        }
+        return null;
+    }
+
     public void updateAutor (Autor a) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
 
         String sql = "UPDATE autor SET nome_autor = ? WHERE id = ?";
 
@@ -105,6 +145,10 @@ public class AutorCRUD {
     }
 
     public void deleteAutor (int id) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
 
         String sql = "DELETE FROM autor WHERE id = ?";
 

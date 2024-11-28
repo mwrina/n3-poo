@@ -12,6 +12,11 @@ public class GeneroCRUD {
     }
 
     public void createGenero (Genero g) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
         String sql = "INSERT INTO genero VALUES (?, ?)";
 
         try {
@@ -34,6 +39,11 @@ public class GeneroCRUD {
     }
 
     public void readGenero() {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
         String sql = "SELECT * FROM genero";
 
         try (PreparedStatement pst = connect.prepareStatement(sql);
@@ -54,6 +64,11 @@ public class GeneroCRUD {
     }
 
     public String readGeneroEspecifico(int generoId) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
         String sql = "SELECT genero FROM genero WHERE id = ?";
         String nomeGenero = null;
 
@@ -77,7 +92,33 @@ public class GeneroCRUD {
         return nomeGenero;
     }
 
+    public Genero getGeneroPorId(int generoId) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
+
+        String sql = "SELECT * FROM genero WHERE id = ?";
+        try {
+            PreparedStatement pst = connect.prepareStatement(sql);
+            pst.setInt(1, generoId);
+
+            ResultSet rst = pst.executeQuery();
+            if (rst.next()) {
+                String genero = rst.getString("genero");
+                return new Genero(generoId, genero);
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao buscar gênero: " + ex.getMessage());
+        }
+        return null;
+    }
+
     public void updateGenero (Genero g) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
 
         String sql = "UPDATE genero SET genero = ? WHERE id = ?";
 
@@ -102,6 +143,10 @@ public class GeneroCRUD {
     }
 
     public void deleteGenero (int id) {
+
+        if (connect == null) {
+            throw new IllegalStateException("A conexão com o banco de dados não foi inicializada. Chame conexaoBD() primeiro.");
+        }
 
         String sql = "DELETE FROM genero WHERE id = ?";
 
