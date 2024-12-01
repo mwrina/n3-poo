@@ -57,6 +57,8 @@ CREATE TABLE `livro` (
   `autor` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+
 --
 -- Indexes for dumped tables
 --
@@ -118,3 +120,20 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Tabela para 'compra'
+CREATE TABLE `compra` (
+  `id_compra` int(11) NOT NULL,
+  `total_compra` double NOT NULL,
+  `compra_autorizada` boolean NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Definindo a chave primária para a tabela 'compra'
+ALTER TABLE `compra`
+  ADD PRIMARY KEY (`id_compra`);
+
+-- Definindo auto incremento para o campo 'id_compra'
+ALTER TABLE `compra`
+  MODIFY `id_compra` int(11) NOT NULL AUTO_INCREMENT;
+
+  
