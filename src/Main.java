@@ -1,6 +1,6 @@
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,11 +10,13 @@ public class Main {
         AutorCRUD autorCRUD = new AutorCRUD();
         GeneroCRUD generoCRUD = new GeneroCRUD();
         LivroCRUD livroCRUD = new LivroCRUD();
+        CompraCRUD compraCRUD = new CompraCRUD();
 
         // Conectando ao banco de dados
         autorCRUD.conexaoBD();
         generoCRUD.conexaoBD();
         livroCRUD.conexaoBD();
+        compraCRUD.conexaoBD();
 
         // Menu de opções
         while (true) {
@@ -312,44 +314,39 @@ public class Main {
                     System.out.println("Comprando livros...");
                     List<Livro> carrinho = new ArrayList<>();
                     double totalCompra = 0.0;
-
+                
                     while (true) {
-                        livroCRUD.readLivro();
+                        livroCRUD.readLivro();  // Exibe os livros disponíveis para compra
                         System.out.print("Digite o ID do livro que deseja adicionar ao carrinho (ou 0 para finalizar): ");
                         int livroId = scanner.nextInt();
-                        scanner.nextLine();
-
-                        if (livroId == 0) break;
-
-                        Livro livro = livroCRUD.getLivroPorId(livroId);
+                        scanner.nextLine();  // Limpa o buffer de entrada
+                
+                        if (livroId == 0) break;  // Finaliza a compra
+                
+                        Livro livro = livroCRUD.getLivroPorId(livroId);  // Obtém o livro pelo ID
                         if (livro != null) {
-                            carrinho.add(livro);
-                            totalCompra += livro.getGenero().getPreco(); // Preço baseado no gênero
+                            carrinho.add(livro);  // Adiciona o livro ao carrinho
+                            totalCompra += livro.getGenero().getPreco();  // Adiciona o preço do livro ao total (baseado no gênero)
                             System.out.printf("Livro '%s' adicionado ao carrinho. Preço: R$%.2f%n", livro.getNome_livro(), livro.getGenero().getPreco());
                         } else {
                             System.out.println("Livro não encontrado. Tente novamente.");
                         }
                     }
-
+                
+                    // Exibe o total da compra
                     System.out.printf("Total da compra: R$%.2f%n", totalCompra);
-
-                    // Verificar necessidade de permissão
-                    try {
-                        if (totalCompra > 100.00) {
-                            System.out.print("O total da compra excede R$100,00. Você tem permissão para realizar esta compra? (sim/não): ");
-                            String resposta = scanner.nextLine();
-
-                            if (!resposta.equalsIgnoreCase("sim")) {
-                                System.out.println("Compra cancelada por falta de permissão.");
-                            } else {
-                                System.out.println("Compra autorizada e concluída!");
-                            }
+                
+                    // Verifica se a compra ultrapassa R$100 e necessita de permissão
+                    if (totalCompra > 100.0) {
+                        System.out.print("Sua compra ultrapassou R$100,00. Você precisa de permissão para concluir a compra. Autorize (sim/não): ");
+                        String respostaPermissao = scanner.nextLine();
+                        if (respostaPermissao.equalsIgnoreCase("sim")) {
+                            System.out.println("Compra autorizada!");
                         } else {
-                            System.out.println("Compra concluída com sucesso!");
+                            System.out.println("Compra não autorizada. A compra foi cancelada.");
                         }
-                    } catch (Exception e) {
-                        System.out.println("Erro ao processar a compra: " + e.getMessage());
-                        e.printStackTrace();
+                    } else {
+                        System.out.println("Compra concluída com sucesso! Total: R$" + totalCompra);
                     }
                     break;
 
